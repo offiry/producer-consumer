@@ -1,0 +1,46 @@
+version: '3.7'
+
+volumes:
+  rabbitmq:
+
+services:
+  rabbitmq:
+    container_name: rabbitmq-ssl
+    image: nitrorider/rabbitmq-ssl-prod
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_CONFIG_FILES=/etc/rabbitmq/rabbitmq.conf
+      - RABBITMQ_SERVER_ADDITIONAL_ERL_ARGS=-rabbitmq_management path_prefix "/rabbit"
+    ports:
+      - 5671:5671
+      - 5672:5672
+      - 15671:15671
+      - 15672:15672
+    restart: always
+    volumes:
+        - rabbitmq:/var/lib/rabbitmq/
+  producer-consumer:
+    container_name: net-rabbitmq-api
+    image: nitrorider/net-rabbitmq-api-prod
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+    ports:
+      - 6060:80
+      - 6061:443
+    restart: always
+    # entrypoint: sh -c "sh /healthcheck.sh"
+    entrypoint: /bin/bash /healthcheck.sh
+  nginx:
+    container_name: nginx
+    image: nitrorider/nginx-prod
+    restart: always
+    volumes:
+      - /etc/letsencrypt/:/etc/letsencrypt/
+    ports: 
+      - 80:80
+      - 443:443
+      - 14672:14672
+    depends_on:
+      - producer-consumer
+      - rabbitmq

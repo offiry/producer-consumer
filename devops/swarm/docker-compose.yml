@@ -1,0 +1,23 @@
+# docker-compose -p="rabbitmq" up
+# docker-compose -p="rabbitmq" down
+# docker stack deploy --compose-file .\docker-compose.yml stackdemo
+# docker stack rm stackdemo
+# docker swarm init
+# docker swarm leave --force
+# docker swarm join-token worker
+
+version: '3.7'
+
+services:
+  rabbitmq:
+    container_name: rabbitmq-ssl
+    image: nitrorider/rabbitmq-ssl
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_CONFIG_FILES=/etc/rabbitmq/rabbitmq.conf
+    ports:
+      - 5671:5671
+      - 5672:5672
+      - 15671:15671
+      - 15672:15672

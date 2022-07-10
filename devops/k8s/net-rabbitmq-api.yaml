@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: net-rabbitmq-api-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: net-rabbitmq-api
+  template:
+    metadata:
+      labels:
+        app: net-rabbitmq-api
+    spec:
+      containers:
+        - name: net-rabbitmq-api
+          image: nitrorider/net-rabbitmq-api
+          resources:
+            limits:
+              memory: 512Mi
+              cpu: "1"
+          ports:
+            - containerPort: 6060
+              name: http
+            - containerPort: 6061
+              name: https
+          env:
+          - name: ASPNETCORE_ENVIRONMENT
+            value: Kubernetes
+          - name: ASPNETCORE_URLS
+            value: https://+:443;http://+:80
+          - name: ASPNETCORE_Kestrel__Certificates__Default__Password
+            value: MySecretPassword
+          - name: ASPNETCORE_Kestrel__Certificates__Default__Path
+            value: /etc/ssl/private/service_certificate.pfx
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: net-rabbitmq-api-clusterip-srv
+spec:
+  type: ClusterIP
+  selector:
+    app: net-rabbitmq-api
+  ports:
+    - name: http
+      protocol: TCP
+      port: 6060
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 6061
+      targetPort: 443
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: net-rabbitmq-api-loadbalancer
+spec:
+  type: LoadBalancer
+  selector:
+    app: net-rabbitmq-api
+  ports:
+    - name: http
+      protocol: TCP
+      port: 6060
+      targetPort: 80
+    - name: https
+      protocol: TCP
+      port: 6061
+      targetPort: 443

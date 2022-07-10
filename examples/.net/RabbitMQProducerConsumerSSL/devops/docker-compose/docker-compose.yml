@@ -1,0 +1,25 @@
+# docker-compose -p="services" up
+# docker-compose -p="services" down
+# https://localhost:6061/api/cqrs
+# http://localhost:6060/api/cqrs
+
+version: '3.7'
+networks:
+  client-network:
+    external:
+      name: services-network
+
+services:
+  rabbitmq:
+    container_name: net-rabbitmq-api
+    image: net-rabbitmq-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Docker
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_Kestrel__Certificates__Default__Password=MySecretPassword
+      - ASPNETCORE_Kestrel__Certificates__Default__Path=/etc/ssl/private/service_certificate.pfx
+    ports:
+      - 6060:80
+      - 6061:443
+    networks:
+      - client-network

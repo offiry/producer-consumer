@@ -1,0 +1,29 @@
+# docker-compose -p="rabbitmq" up
+# docker-compose -p="rabbitmq" down
+
+version: '3.7'
+networks:
+  rabbit-network:
+    name: services-network
+    driver: bridge
+
+# volumes:
+#   rabbitmq:
+
+services:
+  rabbitmq:
+    container_name: rabbitmq-ssl
+    image: rabbitmq-ssl
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=admin
+      - RABBITMQ_CONFIG_FILES=/etc/rabbitmq/rabbitmq.conf
+    ports:
+      - 5671:5671
+      - 5672:5672
+      - 15671:15671
+      - 15672:15672
+    # volumes:
+    #   - rabbitmq:/var/lib/rabbitmq
+    networks:
+      - rabbit-network
