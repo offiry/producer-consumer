@@ -40,4 +40,4 @@ You can then choose what to run, hit [enter] key to build image and run, otherwi
 # Important:
 Make sure to clone this folder to a directory without whitespace in its name! (powershell has issue with names of directories that has whitespaces)
 
-Example: 'c:/github/rabbitmq-ssl'
+Example: 'c:/github/producer-consumer'
