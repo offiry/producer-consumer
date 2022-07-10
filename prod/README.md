@@ -35,12 +35,12 @@ sudo apt install docker-compose
 
 5. Clone this repo
 ```
-git clone https://github.com/offiry/rabbitmq-ssl.git
+git clone https://github.com/offiry/producer-consumer.git
 ```
 
 6. Enter prod folder
 ```
-cd rabbitmq-ssl\prod
+cd producer-consumer\prod
 ```
 
 7. Run docker compose
